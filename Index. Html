@@ -1,0 +1,449 @@
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Booyah League</title>
+  <style>
+body{margin:0;background:#0a0a1a;color:#fff;font-family:sans-serif;padding-bottom:60px}
+.top{background:#111;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.top b{color:#ffd700;font-size:16px}
+.chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #333;background:#161638;color:#aaa}
+.chip.on{color:#0f0;border-color:#0f0}
+.wchip{background:#2a2200;color:#ffd700;border:1px solid #554400;display:none;cursor:pointer}
+.hero{background:linear-gradient(135deg,#1a0f00,#0a1a2a);border:1px solid #333;border-radius:16px;padding:20px;margin:16px}
+.hero h1{font-size:24px;font-weight:900}.hero h1 span{color:#ffd700}
+.stats{display:flex;gap:10px;margin-top:12px}
+.stat{background:rgba(0,0,0,.3);border:1px solid #333;border-radius:10px;padding:10px;text-align:center;flex:1}
+.stat b{color:#ffd700;font-size:18px;display:block}.stat small{color:#666;font-size:8px;text-transform:uppercase}
+.box{background:#111;border:1px solid #333;border-radius:14px;padding:16px;margin:0 16px 12px}
+.card{background:#111;border:1px solid #333;border-radius:14px;padding:16px;margin:0 16px 12px}
+.prize{background:#2a2200;border:1px solid #554400;border-radius:10px;padding:10px;display:flex;justify-content:space-between;margin:8px 0}
+.prize small{color:#ffd700;font-size:9px;text-transform:uppercase}.prize b{color:#ffd700;font-size:18px}
+.meta{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:8px 0}
+.mi{background:#161638;border-radius:8px;padding:8px;text-align:center}
+.mi small{font-size:8px;color:#666;text-transform:uppercase;display:block}.mi b{font-size:13px}
+.badge{padding:4px 12px;border-radius:20px;font-size:9px;font-weight:800;display:inline-block}
+.badge.o{background:rgba(0,230,118,.1);color:#0f0;border:1px solid rgba(0,230,118,.3)}
+.badge.b{background:rgba(255,107,43,.1);color:#ff6b2b;border:1px solid rgba(255,107,43,.3)}
+.badge.m{background:rgba(255,255,255,.03);color:#aaa;border:1px solid #333;font-size:8px}
+.acts{display:flex;gap:8px;margin-top:8px}
+.btn{padding:10px 16px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;color:#fff}
+.btn.o{background:#ff6b2b}.btn.g{background:#25D366}.btn.b{background:#0088cc}
+.btn.p{background:linear-gradient(135deg,#ff6b2b,#e65100);width:100%;padding:14px;font-size:16px}
+.btn.x{background:transparent;border:1px solid #333;color:#aaa;width:100%;padding:12px;margin-top:8px}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:200;display:none;overflow-y:auto;padding:16px}
+.overlay.show{display:block}
+.mbox{background:#111;border:1px solid #333;border-radius:16px;padding:20px;max-width:400px;margin:20px auto}
+.mbox h3{margin-bottom:8px}.mbox p{color:#aaa;font-size:13px;margin-bottom:16px}
+.mbox label{font-size:10px;color:#666;display:block;margin-bottom:4px;font-weight:700}
+.mbox input,.mbox select,.mbox textarea{width:100%;background:#161638;border:1px solid #333;border-radius:8px;padding:14px;color:#fff;font-size:16px;margin-bottom:12px;font-family:sans-serif}
+.mbox textarea{min-height:80px;resize:vertical}
+.mbox select{appearance:none}
+.bal{background:#2a2200;border:1px solid #554400;border-radius:12px;padding:16px;text-align:center;margin-bottom:12px}
+.bal small{font-size:10px;color:#666;display:block}.bal b{font-size:28px;color:#ffd700}
+.wtabs{display:flex;gap:6px;margin-bottom:14px}
+.wtab{flex:1;background:#161638;border:1px solid #333;color:#aaa;padding:10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;text-align:center}
+.wtab.on{background:#2a1508;border-color:#ff6b2b;color:#ff6b2b}
+.upi{background:#161638;border:1px solid #333;border-radius:12px;padding:16px;text-align:center;margin-bottom:12px}
+.upi b{color:#ffd700;font-family:monospace;font-size:16px;display:block;margin-top:8px}
+.upi small{color:#666;display:block;margin-top:4px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #333;display:flex;z-index:100}
+.nav button{flex:1;padding:12px;background:none;border:none;color:#666;font-size:10px;font-weight:700;cursor:pointer}
+.nav button.on{color:#ffd700}
+.acard{background:#111;border:1px solid #333;border-radius:14px;padding:16px;margin:0 16px 14px}
+.acard h4{margin-bottom:8px}
+.acard label{font-size:10px;color:#666;display:block;margin-bottom:4px;font-weight:700}
+.acard input,.acard select,.acard textarea{width:100%;background:#161638;border:1px solid #333;border-radius:8px;padding:11px;color:#fff;font-size:14px;margin-bottom:10px;font-family:sans-serif}
+.acard textarea{min-height:60px;resize:vertical}
+.acard select{appearance:none}
+.gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.gt-card{background:#161638;border:2px solid #333;border-radius:10px;padding:12px;text-align:center;cursor:pointer}
+.gt-card.sel{border-color:#ff6b2b}
+.map-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.map-card{background:#161638;border:2px solid #333;border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.map-card.sel{border-color:#00e5ff}
+.prow{display:flex;gap:10px;background:#161638;border:1px solid #333;border-radius:10px;padding:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap}
+.prow .av{width:36px;height:36px;border-radius:8px;background:rgba(255,107,43,.1);color:#ff6b2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
+.prow .info{flex:1}.prow .info .n{font-size:13px;font-weight:700}.prow .info .s{font-size:11px;color:#666}
+.ab{background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);color:#0f0;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:800;cursor:pointer}
+.rb{background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);color:#f44;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:800;cursor:pointer;margin-left:6px}
+.pill{display:inline-block;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:800}
+.pill.g{background:rgba(0,230,118,.1);color:#0f0}.pill.p{background:rgba(124,77,255,.1);color:#7c4dff}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a2030;border:1px solid #333;border-radius:16px;padding:12px 20px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;max-width:85vw;text-align:center}
+.toast.show{opacity:1}
+.saved-user{background:#161638;border:1px solid #333;border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.saved-user:hover{border-color:#ff6b2b}
+</style>
+ </head>
+ <body>
+  <div class="top">
+   <b>BOOYAH LEAGUE</b>
+   <div style="display:flex;gap:8px">
+    <div class="wchip" id="wC" onclick="openW()">
+     ₹<span id="wB">0</span>
+    </div>
+    <div class="chip" id="uC" onclick="showLogin()">Login</div>
+   </div>
+  </div>
+  <div id="pg-home">
+   <div class="hero">
+    <div style="display:inline-block;background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:800;color:#f44;margin-bottom:10px">LIVE</div>
+    <h1>COMPETE.
+     <br>
+     <span>WIN BIG.</span></h1>
+    <p>Join tournaments, win prizes.</p>
+    <div class="stats">
+     <div class="stat">
+      <b id="hT">0</b><small>Teams</small>
+     </div>
+     <div class="stat">
+      <b id="hP">₹0</b><small>Prize</small>
+     </div>
+     <div class="stat">
+      <b id="hR">0</b><small>Tournaments</small>
+     </div>
+    </div>
+   </div>
+   <div class="box">
+    <h4>📤 Invite Friends</h4>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+     <input id="sU" type="text" readonly>
+     <button class="btn o" onclick="copyL()">Copy</button>
+    </div>
+    <div style="display:flex;gap:8px">
+     <button class="btn g" onclick="shareWA()" style="flex:1">WhatsApp</button>
+     <button class="btn b" onclick="shareTG()" style="flex:1">Telegram</button>
+    </div>
+   </div>
+   <div id="fT" style="display:flex;gap:6px;padding:0 16px;margin-bottom:16px;overflow-x:auto"></div>
+   <div id="tL"></div>
+  </div>
+  <div id="pg-teams" style="display:none;padding:16px">
+   <div style="font-size:12px;font-weight:800;color:#666;text-transform:uppercase;margin-bottom:12px">
+    Teams (<span id="tC">0</span>)
+   </div>
+   <div id="teamList"></div>
+  </div>
+  <div id="pg-score" style="display:none;padding:16px">
+   <div style="font-size:12px;font-weight:800;color:#666;text-transform:uppercase;margin-bottom:12px">Scoreboard</div>
+   <div id="sL"></div>
+  </div>
+  <div id="pg-admin" style="display:none">
+   <div class="acard">
+    <h4>Create Tournament</h4>
+    <label>Name</label><input id="aN" placeholder="Squad Showdown"> <label>Game Type</label>
+    <div class="gt-grid" id="gG"></div>
+    <label>Map</label>
+    <div class="map-grid" id="mG"></div>
+    <label>Entry Fee</label><input id="aF" type="number" value="100"> <label>Prize Pool</label><input id="aP" type="number" value="1000"> <label>Per Kill</label><input id="aK" type="number" value="10"> <label>Winner Bonus</label><input id="aB" type="number" value="50"> <label>Max Teams</label><input id="aM" type="number" value="40"> <label>Per Lobby</label><select id="aL"><option>10</option><option>8</option><option>6</option></select> <label>Rules (one per line)</label><textarea id="aR" placeholder="No hacking
+No cheating"></textarea> <label>Banned Items (one per line)</label><textarea id="aBI" placeholder="M1887 banned
+Chrono banned"></textarea>
+    <button class="btn p" onclick="createT()">Create Tournament</button>
+   </div>
+   <div class="acard" id="rC" style="display:none">
+    <h4>Room Details</h4>
+    <select id="rS" onchange="renderLob()"></select>
+    <div id="lR"></div>
+   </div>
+   <div class="acard">
+    <h4>Pending Payments <span id="pB" style="background:#f44;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;display:none">0</span></h4>
+    <div id="pL"></div>
+   </div>
+   <div class="acard">
+    <h4>Add Money <span id="tB" style="background:#f44;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;display:none">0</span></h4>
+    <div id="addL"></div>
+   </div>
+   <div class="acard">
+    <h4>Withdraw <span id="wB2" style="background:#f44;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;display:none">0</span></h4>
+    <div id="wL"></div>
+   </div>
+   <div class="acard">
+    <h4>Winners</h4>
+    <div id="wF"></div>
+   </div>
+  </div>
+  <div class="nav">
+   <button class="on" onclick="go('home',this)">Home</button>
+   <button onclick="go('teams',this)">Teams</button>
+   <button onclick="go('score',this)">Score</button>
+   <button onclick="go('admin',this)">Admin</button>
+  </div>
+  <!-- LOGIN MODAL -->
+  <div class="overlay" id="loginOv">
+   <div class="mbox">
+    <h3>Login</h3>
+    <p>Sign in to join tournaments.</p>
+    <div id="savedArea" style="display:none;margin-bottom:14px">
+     <div style="font-size:11px;color:#666;margin-bottom:8px;font-weight:700">Saved accounts:</div>
+     <div id="savedList"></div>
+    </div>
+    <label>Name</label><input id="lN" placeholder="Your name" autocomplete="name"> <label>Email</label><input id="lE" type="email" placeholder="email@example.com" autocomplete="email"> <label>Phone</label><input id="lP" type="tel" placeholder="9876543210" autocomplete="tel">
+    <button class="btn p" id="loginBtn">Login</button>
+    <button class="btn x" onclick="hideO('loginOv')">Cancel</button>
+   </div>
+  </div>
+  <div class="overlay" id="joinOv">
+   <div class="mbox" id="jC"></div>
+  </div>
+  <div class="overlay" id="detOv">
+   <div class="mbox" id="dC"></div>
+  </div>
+  <div class="overlay" id="walOv">
+   <div class="mbox">
+    <h3>Wallet</h3>
+    <div class="bal">
+     <small>Balance</small><b id="walB">₹0</b>
+    </div>
+    <div class="wtabs">
+     <div class="wtab on" id="wtAdd">Add</div>
+     <div class="wtab" id="wtWd">Withdraw</div>
+     <div class="wtab" id="wtHist">History</div>
+    </div>
+    <div id="walC"></div>
+    <button class="btn x" id="walCloseBtn">Close</button>
+   </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+var ADM='sunitamaurya3217@gmail.com';
+var SITE_URL='https://arjunvishwas1172-a11y.github.io/Indian-tournament/';
+var UPI='9324214729@kotakbank';
+var UPIN='Shivkumar Pitambar Maurya';
+var ADM_PHONE='919324214729';
+var user=null,teams=[],tournaments=[],pPay=[],pTop=[],pWd=[],wHist=[];
+var tid=1,tmId=1,filter='all',sGT='br',sMap='bermuda';
+var GT=[{id:'br',e:'🔥',n:'BR'},{id:'cs',e:'⚔️',n:'CS'},{id:'lw',e:'🐺',n:'Lone Wolf'},{id:'custom',e:'🎪',n:'Custom'}];
+var MAPS=[{id:'bermuda',e:'🏝️',n:'Bermuda'},{id:'kalahari',e:'🏜️',n:'Kalahari'},{id:'purgatory',e:'🌋',n:'Purgatory'},{id:'alpine',e:'🏔️',n:'Alpine'},{id:'nexterra',e:'🌆',n:'Nexterra'},{id:'solara',e:'🏟️',n:'Solara'}];
+ 
+// LOAD
+try{var d=localStorage.getItem('bl');if(d){var s=JSON.parse(d);teams=s.teams||[];pPay=s.pPay||[];pTop=s.pTop||[];pWd=s.pWd||[];wHist=s.wHist||[];tid=s.tid||1;tmId=s.tmId||1;}}catch(e){}
+try{var t=localStorage.getItem('bl_t');if(t)tournaments=JSON.parse(t);}catch(e){}
+try{var u=localStorage.getItem('bl_u');if(u){user=JSON.parse(u);var us=JSON.parse(localStorage.getItem('bl_us')||'{}');if(user&&user.email&&us[user.email])user.balance=us[user.email].balance||0;updUI();}}catch(e){}
+ 
+document.getElementById('sU').value=SITE_URL;
+ 
+function save(){try{localStorage.setItem('bl',JSON.stringify({teams:teams,pPay:pPay,pTop:pTop,pWd:pWd,wHist:wHist,tid:tid,tmId:tmId}));localStorage.setItem('bl_t',JSON.stringify(tournaments));}catch(e){}if(user&&user.email){try{var u=JSON.parse(localStorage.getItem('bl_us')||'{}');u[user.email]=user;localStorage.setItem('bl_us',JSON.stringify(u));localStorage.setItem('bl_u',JSON.stringify(user));}catch(e){}}}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+function showO(id){document.getElementById(id).classList.add('show');}
+function hideO(id){document.getElementById(id).classList.remove('show');}
+function copyL(){try{navigator.clipboard.writeText(SITE_URL);toast('Copied!');}catch(e){prompt('Copy:',SITE_URL);}}
+function shareWA(){window.open('https://wa.me/?text='+encodeURIComponent('🔥 BOOYAH LEAGUE!\n'+SITE_URL),'_blank');}
+function shareTG(){window.open('https://t.me/share/url?url='+encodeURIComponent(SITE_URL),'_blank');}
+ 
+// NAV
+function go(p,b){
+  document.querySelectorAll('.nav button').forEach(function(x){x.classList.remove('on');});
+  if(b)b.classList.add('on');
+  ['home','teams','score','admin'].forEach(function(k){document.getElementById('pg-'+k).style.display=k===p?'block':'none';});
+  if(p==='admin'){
+    if(!user||!user.email){toast('Login first!');go('home',document.querySelector('.nav button'));return;}
+    if(user.email.trim().toLowerCase()!==ADM.trim().toLowerCase()){toast('Admin only! Logged in as: '+user.email);go('home',document.querySelector('.nav button'));return;}
+    renderAdmin();
+  }
+  if(p==='teams')renderTeams();
+  if(p==='score')renderScore();
+}
+ 
+// FILTER
+function setF(f){filter=f;renderF();renderHome();}
+function renderF(){
+  var tabs=[{id:'all',l:'All'},{id:'br',l:'🔥 BR'},{id:'cs',l:'⚔️ CS'},{id:'lw',l:'🐺 Lone Wolf'},{id:'custom',l:'Custom'}];
+  var h='';for(var i=0;i<tabs.length;i++){h+='<div style="padding:10px 16px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid '+(filter===tabs[i].id?'#ff6b2b':'#333')+';background:'+(filter===tabs[i].id?'#2a1508':'#111')+';color:'+(filter===tabs[i].id?'#ff6b2b':'#aaa')+';cursor:pointer;white-space:nowrap" onclick="setF(\''+tabs[i].id+'\')">'+tabs[i].l+'</div>';}
+  document.getElementById('fT').innerHTML=h;
+}
+ 
+function renderGT(){var h='';for(var i=0;i<GT.length;i++){h+='<div class="gt-card'+(sGT===GT[i].id?' sel':'')+'" onclick="sGT=\''+GT[i].id+'\';renderGT()"><div style="font-size:24px">'+GT[i].e+'</div><div style="font-size:10px;font-weight:800">'+GT[i].n+'</div></div>';}document.getElementById('gG').innerHTML=h;}
+function renderMAP(){var h='';for(var i=0;i<MAPS.length;i++){h+='<div class="map-card'+(sMap===MAPS[i].id?' sel':'')+'" onclick="sMap=\''+MAPS[i].id+'\';renderMAP()"><div style="font-size:18px">'+MAPS[i].e+'</div><div style="font-size:9px;font-weight:700">'+MAPS[i].n+'</div></div>';}document.getElementById('mG').innerHTML=h;}
+ 
+// LOGIN
+function showLogin(){
+  if(user){openW();return;}
+  // Show saved accounts
+  var savedArea=document.getElementById('savedArea');
+  var savedList=document.getElementById('savedList');
+  var users=JSON.parse(localStorage.getItem('bl_us')||'{}');
+  var keys=Object.keys(users);
+  if(keys.length>0){
+    savedArea.style.display='block';
+    savedList.innerHTML='';
+    for(var i=0;i<keys.length;i++){
+      var u=users[keys[i]];
+      var div=document.createElement('div');
+      div.className='saved-user';
+      div.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:rgba(255,107,43,.1);color:#ff6b2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">'+u.name[0].toUpperCase()+'</div><div><div style="font-size:13px;font-weight:700">'+esc(u.name)+'</div><div style="font-size:11px;color:#666">'+esc(u.email)+'</div></div>';
+      div.setAttribute('data-email',u.email);
+      div.onclick=function(){
+        var e=this.getAttribute('data-email');
+        var u=JSON.parse(localStorage.getItem('bl_us')||'{}');
+        if(u[e]){
+          user={name:u[e].name,email:u[e].email,phone:u[e].phone||'',balance:u[e].balance||0};
+          try{localStorage.setItem('bl_u',JSON.stringify(user));}catch(x){}
+          updUI();hideO('loginOv');toast('Welcome back, '+user.name+'!');
+        }
+      };
+      savedList.appendChild(div);
+    }
+  }else{savedArea.style.display='none';}
+  showO('loginOv');
+}
+ 
+// Login button handler
+document.getElementById('loginBtn').onclick=function(){
+  var n=document.getElementById('lN').value.trim();
+  var e=document.getElementById('lE').value.trim().toLowerCase();
+  var p=document.getElementById('lP').value.trim();
+  if(!n||!e||!p){toast('All fields!');return;}
+  var eb=0;
+  try{var u=JSON.parse(localStorage.getItem('bl_us')||'{}');if(u[e])eb=u[e].balance||0;}catch(x){}
+  user={name:n,email:e,phone:p,balance:eb};
+  try{var u=JSON.parse(localStorage.getItem('bl_us')||'{}');u[e]=user;localStorage.setItem('bl_us',JSON.stringify(u));localStorage.setItem('bl_u',JSON.stringify(user));}catch(x){}
+  updUI();hideO('loginOv');toast('Welcome, '+n+'! Balance: ₹'+eb);
+};
+ 
+function updUI(){
+  if(!user)return;
+  try{var u=JSON.parse(localStorage.getItem('bl_us')||'{}');if(user.email&&u[user.email])user.balance=u[user.email].balance||0;}catch(x){}
+  document.getElementById('uC').textContent='✅ '+user.name;document.getElementById('uC').classList.add('on');
+  document.getElementById('wC').style.display='flex';document.getElementById('wB').textContent=user.balance||0;
+}
+ 
+// WALLET
+function openW(){if(!user){showO('loginOv');return;}document.getElementById('walB').textContent='₹'+(user.balance||0);swT('add');showO('walOv');}
+ 
+// Wallet close button
+document.getElementById('walCloseBtn').onclick=function(){hideO('walOv');};
+ 
+// Wallet tab buttons
+document.getElementById('wtAdd').onclick=function(){swT('add');};
+document.getElementById('wtWd').onclick=function(){swT('wd');};
+document.getElementById('wtHist').onclick=function(){swT('hist');};
+ 
+function swT(tab){
+  document.getElementById('wtAdd').classList.toggle('on',tab==='add');
+  document.getElementById('wtWd').classList.toggle('on',tab==='wd');
+  document.getElementById('wtHist').classList.toggle('on',tab==='hist');
+  var c=document.getElementById('walC');c.innerHTML='';
+  if(tab==='add'){
+    var l1=document.createElement('label');l1.textContent='Amount (min ₹20)';c.appendChild(l1);
+    var i1=document.createElement('input');i1.id='wAmt';i1.type='number';i1.placeholder='500';c.appendChild(i1);
+    var ub=document.createElement('div');ub.className='upi';ub.innerHTML='📱<b>'+UPI+'</b><small>'+UPIN+'</small>';c.appendChild(ub);
+    var l2=document.createElement('label');l2.textContent='UTR / Transaction ID';c.appendChild(l2);
+    var i2=document.createElement('input');i2.id='wUTR';i2.type='text';i2.placeholder='Transaction ID';c.appendChild(i2);
+    var b=document.createElement('button');b.className='btn p';b.textContent='📤 Submit Request';b.onclick=function(){doAdd();};c.appendChild(b);
+  }else if(tab==='wd'){
+    var bd=document.createElement('div');bd.className='bal';bd.innerHTML='<small>Available</small><b>₹'+(user.balance||0)+'</b>';c.appendChild(bd);
+    var l1=document.createElement('label');l1.textContent='Amount (min ₹50)';c.appendChild(l1);
+    var i1=document.createElement('input');i1.id='wdA';i1.type='number';i1.placeholder='200';c.appendChild(i1);
+    var l2=document.createElement('label');l2.textContent='UPI ID';c.appendChild(l2);
+    var i2=document.createElement('input');i2.id='wdU';i2.type='text';i2.placeholder='yourname@upi';c.appendChild(i2);
+    var b=document.createElement('button');b.className='btn p';b.textContent='🏧 Withdraw';b.style.background='#00e676';b.onclick=function(){doWd();};c.appendChild(b);
+  }else{
+    var items=wHist.filter(function(h){return h.email===user.email;}).reverse();
+    if(!items.length){c.innerHTML='<div style="text-align:center;padding:20px;color:#666">No transactions.</div>';return;}
+    for(var i=0;i<items.length;i++){var h=items[i];var tl={topup:'➕ Add',withdraw:'Withdraw',entry:'Entry',prize:'Prize'}[h.type]||h.type;var col=h.status==='pending'?'#fb0':'#0f0';var row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;background:#161638;border:1px solid #333;border-radius:8px;padding:10px 12px;margin-bottom:6px';row.innerHTML='<div><div style="font-size:12px">'+tl+'</div><div style="font-size:10px;color:#666">'+h.status+'</div></div><div style="font-weight:800;color:'+col+'">₹'+h.amount+'</div>';c.appendChild(row);}
+  }
+}
+ 
+function doAdd(){
+  var a=parseInt(document.getElementById('wAmt').value)||0;
+  var u=document.getElementById('wUTR').value.trim();
+  if(a<20){toast('Min ₹20!');return;}
+  if(!u){toast('UTR!');return;}
+  if(!user){toast('Login!');return;}
+  // Check duplicate UTR
+  for(var i=0;i<pTop.length;i++){if(pTop[i].utr===u){toast('⚠️ UTR already used!');return;}}
+  pTop.push({name:user.name,email:user.email,phone:user.phone,amount:a,utr:u,status:'pending'});
+  wHist.push({email:user.email,type:'topup',amount:a,status:'pending',note:'UTR:'+u});
+  save();hideO('walOv');toast('₹'+a+' submitted!');
+  window.open('https://wa.me/'+ADM_PHONE+'?text='+encodeURIComponent('💰 ADD MONEY\nName: '+user.name+'\nEmail: '+user.email+'\nAmount: ₹'+a+'\nUTR: '+u),'_blank');
+}
+ 
+function doWd(){
+  var a=parseInt(document.getElementById('wdA').value)||0;
+  var u=document.getElementById('wdU').value.trim();
+  if(a<50){toast('Min ₹50!');return;}
+  if(a>(user.balance||0)){toast('Balance kam!');return;}
+  if(!u){toast('UPI!');return;}
+  user.balance=(user.balance||0)-a;
+  pWd.push({name:user.name,email:user.email,amount:a,upi:u,status:'pending'});
+  wHist.push({email:user.email,type:'withdraw',amount:a,status:'pending',note:'To:'+u});
+  save();updUI();hideO('walOv');toast('Submitted!');
+  window.open('https://wa.me/'+ADM_PHONE+'?text='+encodeURIComponent('🏧 WITHDRAW\nName: '+user.name+'\nAmount: ₹'+a+'\nUPI: '+u),'_blank');
+}
+ 
+// HOME
+function renderHome(){
+  document.getElementById('hT').textContent=teams.length;
+  var tp=0;for(var i=0;i<tournaments.length;i++){tp+=tournaments[i].prize||0;}
+  document.getElementById('hP').textContent='₹'+tp;document.getElementById('hR').textContent=tournaments.length;
+  var f=[];for(var i=0;i<tournaments.length;i++){if(filter==='all'||tournaments[i].gt===filter)f.push(tournaments[i]);}
+  if(!f.length){document.getElementById('tL').innerHTML='<div style="text-align:center;padding:40px;color:#666">No tournaments.</div>';return;}
+  var html='';for(var i=0;i<f.length;i++){var t=f[i];var j=0;for(var k=0;k<teams.length;k++){if(teams[k].tid===t.id)j++;}var gt=GT[0];for(var k=0;k<GT.length;k++){if(GT[k].id===t.gt)gt=GT[k];}var mp=MAPS[0];for(var k=0;k<MAPS.length;k++){if(MAPS[k].id===t.map)mp=MAPS[k];}
+  html+='<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:800;font-size:16px">'+esc(t.name)+'</span><span class="badge o">'+t.status.toUpperCase()+'</span></div><div style="display:flex;gap:6px;margin-bottom:8px"><span class="badge b">'+gt.e+' '+gt.n+'</span><span class="badge m">'+mp.e+' '+mp.n+'</span></div><div class="prize"><small>PRIZE</small><b>₹'+t.prize+'</b></div><div class="meta"><div class="mi"><small>Entry</small><b>₹'+t.fee+'</b></div><div class="mi"><small>Teams</small><b style="color:#0f0">'+j+'/'+t.max+'</b></div><div class="mi"><small>Kill</small><b style="color:#ffd700">₹'+t.pk+'</b></div><div class="mi"><small>Lobby</small><b style="color:#7c4dff">'+t.lobby+'</b></div></div><div class="acts">'+(t.status==='open'?'<button class="btn p" style="flex:1" onclick="joinT('+t.id+')">JOIN</button>':'')+'<button class="btn x" style="width:auto;margin:0;flex:1" onclick="viewT('+t.id+')">Details</button></div></div>';}
+  document.getElementById('tL').innerHTML=html;
+}
+ 
+function viewT(id){var t=null;for(var i=0;i<tournaments.length;i++){if(tournaments[i].id===id){t=tournaments[i];break;}}if(!t)return;var j=0;for(var i=0;i<teams.length;i++){if(teams[i].tid===t.id)j++;}var gt=GT[0];for(var i=0;i<GT.length;i++){if(GT[i].id===t.gt)gt=GT[i];}var mp=MAPS[0];for(var i=0;i<MAPS.length;i++){if(MAPS[i].id===t.map)mp=MAPS[i];}
+var h='<h3>'+esc(t.name)+'</h3><div style="display:flex;gap:6px;margin:8px 0"><span class="badge b">'+gt.e+' '+gt.n+'</span><span class="badge m">'+mp.e+' '+mp.n+'</span></div><div class="prize"><small>PRIZE</small><b>₹'+t.prize+'</b></div>';
+if(t.rules&&t.rules.length){h+='<div style="background:rgba(255,71,87,.05);border:1px solid rgba(255,71,87,.2);border-radius:14px;padding:16px;margin:10px 0"><div style="color:#f44;font-size:11px;font-weight:800;margin-bottom:10px">RULES</div>';for(var i=0;i<t.rules.length;i++){h+='<div style="padding:6px 0;font-size:12px;border-bottom:1px solid rgba(255,71,87,.1)">❌ '+esc(t.rules[i])+'</div>';}h+='<div style="background:rgba(255,71,87,.06);border:1px solid rgba(255,71,87,.2);border-radius:8px;padding:10px;font-size:11px;color:#f44;margin-top:10px">Rule todne par BAN!</div></div>';}
+if(t.banned&&t.banned.length){h+='<div style="background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.2);border-radius:14px;padding:16px;margin:10px 0"><div style="color:#fb0;font-size:11px;font-weight:800;margin-bottom:10px">BANNED</div>';for(var i=0;i<t.banned.length;i++){h+='<div style="padding:6px 0;font-size:12px;color:#fb0;border-bottom:1px solid rgba(255,184,0,.1)">🚫 '+esc(t.banned[i])+'</div>';}h+='<div style="background:rgba(255,71,87,.06);border:1px solid rgba(255,71,87,.2);border-radius:8px;padding:10px;font-size:11px;color:#f44;margin-top:10px">Banned = Disqualification!</div></div>';}
+h+='<div style="font-size:11px;color:#666;margin-top:12px">Teams: '+j+'/'+t.max+'</div><button class="btn x" onclick="hideO(\'detOv\')">Close</button>';
+document.getElementById('dC').innerHTML=h;showO('detOv');}
+ 
+// JOIN
+function joinT(id){if(!user){showO('loginOv');return;}var t=null;for(var i=0;i<tournaments.length;i++){if(tournaments[i].id===id){t=tournaments[i];break;}}if(!t)return;var fee=t.fee||0,bal=user.balance||0,enough=bal>=fee;
+var h='<h3>'+esc(t.name)+'</h3><div style="display:flex;justify-content:space-between;background:rgba(255,107,43,.05);border:1px solid rgba(255,107,43,.15);border-radius:10px;padding:12px;margin-bottom:12px"><span style="font-size:10px;color:#ff6b2b;font-weight:800">ENTRY</span><span style="font-size:24px;font-weight:900;color:#ff6b2b">₹'+fee+'</span></div><div class="bal"><small>Balance</small><b style="'+(enough?'':'color:#f44')+'">₹'+bal+'</b></div>';
+if(enough)h+='<button class="btn p" onclick="doJoin('+id+')">Pay ₹'+fee+' & Join</button>';
+else h+='<p style="color:#f44;text-align:center;margin-bottom:10px">Balance kam!</p>';
+h+='<button class="btn x" onclick="hideO(\'joinOv\')">Cancel</button>';
+document.getElementById('jC').innerHTML=h;showO('joinOv');}
+ 
+function doJoin(id){var t=null;for(var i=0;i<tournaments.length;i++){if(tournaments[i].id===id){t=tournaments[i];break;}}if(!t)return;user.balance=(user.balance||0)-(t.fee||0);save();updUI();
+var tpl=t.lobby||10,ct=0;for(var i=0;i<teams.length;i++){if(teams[i].tid===t.id)ct++;}var lobby=Math.floor(ct/tpl)+1;
+teams.push({id:tmId++,tid:t.id,name:user.name+' Team',player:user.name,kills:0,place:0,lobby:lobby,email:user.email});
+save();hideO('joinOv');renderHome();toast('Joined! Lobby '+lobby);
+window.open('https://wa.me/'+ADM_PHONE+'?text='+encodeURIComponent('🎮 JOIN\nName: '+user.name+'\nTournament: '+t.name+'\nFee: ₹'+t.fee+'\nLobby: '+lobby),'_blank');}
+ 
+// TEAMS
+function renderTeams(){document.getElementById('tC').textContent=teams.length;if(!teams.length){document.getElementById('teamList').innerHTML='<div style="text-align:center;padding:40px;color:#666">No teams.</div>';return;}var h='';for(var i=0;i<teams.length;i++){var t=teams[i];h+='<div class="card"><b>'+esc(t.name)+'</b> <span class="pill g">PAID</span> <span class="pill p">Lobby '+t.lobby+'</span><div style="font-size:11px;color:#666;margin-top:4px">'+esc(t.player)+'</div></div>';}document.getElementById('teamList').innerHTML=h;}
+ 
+// SCORE
+function renderScore(){if(!teams.length){document.getElementById('sL').innerHTML='<div style="text-align:center;padding:40px;color:#666">No teams.</div>';return;}var sorted=teams.slice().sort(function(a,b){return(b.kills+b.place)-(a.kills+a.place);});var h='';for(var i=0;i<sorted.length;i++){var t=sorted[i];var tr=null;for(var k=0;k<tournaments.length;k++){if(tournaments[k].id===t.tid){tr=tournaments[k];break;}}var pk=tr?tr.pk:0;var e=t.kills*pk;
+h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:16px;font-weight:900;color:#666;margin-right:8px">#'+(i+1)+'</span><b>'+esc(t.name)+'</b></div><div style="color:#ffd700;font-weight:900">₹'+e+'</div></div><div style="display:flex;gap:6px;margin-top:8px"><div style="flex:1;background:#161638;border-radius:6px;padding:6px;text-align:center"><div style="font-size:8px;color:#666">Kills</div><input type="number" min="0" value="'+t.kills+'" style="width:50px;text-align:center;background:transparent;border:none;color:#fff;font-size:16px;font-weight:900" onchange="setK('+t.id+',this.value)"></div><div style="flex:1;background:#161638;border-radius:6px;padding:6px;text-align:center"><div style="font-size:8px;color:#666">Place</div><input type="number" min="0" value="'+t.place+'" style="width:50px;text-align:center;background:transparent;border:none;color:#fff;font-size:16px;font-weight:900" onchange="setP('+t.id+',this.value)"></div><div style="flex:1;background:#161638;border-radius:6px;padding:6px;text-align:center"><div style="font-size:8px;color:#666">₹</div><div style="font-size:16px;font-weight:900;color:#0f0">₹'+e+'</div></div></div></div>';}
+document.getElementById('sL').innerHTML=h;}
+function setK(id,v){for(var i=0;i<teams.length;i++){if(teams[i].id===id){teams[i].kills=parseInt(v)||0;break;}}save();renderScore();}
+function setP(id,v){for(var i=0;i<teams.length;i++){if(teams[i].id===id){teams[i].place=parseInt(v)||0;break;}}save();renderScore();}
+ 
+// ADMIN
+function renderAdmin(){renderRSel();renderPL();renderTL();renderWL();renderWF();renderGT();renderMAP();}
+function renderRSel(){var h='';for(var i=0;i<tournaments.length;i++){h+='<option value="'+tournaments[i].id+'">'+esc(tournaments[i].name)+'</option>';}document.getElementById('rS').innerHTML=h;renderLob();}
+function renderLob(){var sel=document.getElementById('rS');var t=null;for(var i=0;i<tournaments.length;i++){if(tournaments[i].id===parseInt(sel.value)){t=tournaments[i];break;}}var el=document.getElementById('lR');if(!t||!el)return;var tpl=t.lobby||10,total=Math.ceil(t.max/tpl);if(!t.lobbies)t.lobbies={};var h='';for(var i=1;i<=total;i++){if(!t.lobbies[i])t.lobbies[i]={r:'',p:''};var lb=t.lobbies[i];
+h+='<div style="background:#161638;border:1px solid #333;border-radius:10px;padding:12px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:800;color:#ffd700">LOBBY '+i+'</span><span style="font-size:10px;color:#666">'+((i-1)*tpl+1)+'-'+(i*tpl)+'</span></div><div style="display:flex;gap:6px"><input id="lr'+i+'" value="'+esc(lb.r||'')+'" placeholder="Room ID" style="flex:1;background:#111;border:1px solid #333;border-radius:6px;padding:8px;color:#fff;font-size:12px;margin-bottom:0"><input id="lp'+i+'" value="'+esc(lb.p||'')+'" placeholder="Pass" style="flex:1;background:#111;border:1px solid #333;border-radius:6px;padding:8px;color:#fff;font-size:12px;margin-bottom:0"><button class="ab" onclick="saveLb('+i+')">Save</button></div></div>';}el.innerHTML=h;}
+function saveLb(i){var sel=document.getElementById('rS');var t=null;for(var j=0;j<tournaments.length;j++){if(tournaments[j].id===parseInt(sel.value)){t=tournaments[j];break;}}if(!t)return;t.lobbies[i]={r:document.getElementById('lr'+i).value.trim(),p:document.getElementById('lp'+i).value.trim()};t.status='ongoing';save();renderHome();toast('Lobby '+i+' saved!');}
+function createT(){if(!user||!user.email||user.email.trim().toLowerCase()!==ADM.trim().toLowerCase()){toast('Admin only!');return;}var n=document.getElementById('aN').value.trim();if(!n){toast('Name!');return;}tournaments.push({id:tid++,name:n,fee:parseInt(document.getElementById('aF').value)||0,prize:parseInt(document.getElementById('aP').value)||0,pk:parseInt(document.getElementById('aK').value)||0,bonus:parseInt(document.getElementById('aB').value)||0,max:parseInt(document.getElementById('aM').value)||40,lobby:parseInt(document.getElementById('aL').value)||10,status:'open',gt:sGT,map:sMap,rules:document.getElementById('aR').value.trim().split('\n').filter(Boolean),banned:document.getElementById('aBI').value.trim().split('\n').filter(Boolean),lobbies:{}});save();renderHome();renderRSel();toast('Created!');}
+ 
+// ADMIN APPROVE (createElement)
+function renderPL(){var el=document.getElementById('pL');var items=[];for(var i=0;i<pPay.length;i++){if(pPay[i].status==='pending')items.push({p:pPay[i],i:i});}var b=document.getElementById('pB');b.style.display=items.length?'inline':'none';b.textContent=items.length;el.innerHTML='';if(!items.length){el.innerHTML='<div style="text-align:center;padding:20px;color:#666">No pending.</div>';return;}for(var j=0;j<items.length;j++){var p=items[j].p,idx=items[j].i;var row=document.createElement('div');row.className='prow';var av=document.createElement('div');av.className='av';av.textContent=p.name[0];row.appendChild(av);var info=document.createElement('div');info.className='info';info.innerHTML='<div class="n">'+esc(p.name)+' — ₹'+p.amount+'</div><div class="s">UTR: '+esc(p.utr)+'</div>';row.appendChild(info);var abtn=document.createElement('button');abtn.className='ab';abtn.textContent='✓ Approve';abtn.setAttribute('data-idx',idx);abtn.onclick=function(){appPay(parseInt(this.getAttribute('data-idx')));};row.appendChild(abtn);var rbtn=document.createElement('button');rbtn.className='rb';rbtn.textContent='✕';rbtn.setAttribute('data-idx',idx);rbtn.onclick=function(){rejPay(parseInt(this.getAttribute('data-idx')));};row.appendChild(rbtn);el.appendChild(row);}}
+ 
+function renderTL(){var el=document.getElementById('addL');var items=[];for(var i=0;i<pTop.length;i++){if(pTop[i].status==='pending')items.push({p:pTop[i],i:i});}var b=document.getElementById('tB');b.style.display=items.length?'inline':'none';b.textContent=items.length;el.innerHTML='';if(!items.length){el.innerHTML='<div style="text-align:center;padding:20px;color:#666">No requests.</div>';return;}for(var j=0;j<items.length;j++){var p=items[j].p,idx=items[j].i;var row=document.createElement('div');row.className='prow';var av=document.createElement('div');av.className='av';av.textContent=p.name[0];row.appendChild(av);var info=document.createElement('div');info.className='info';info.innerHTML='<div class="n">'+esc(p.name)+' — ₹'+p.amount+'</div><div class="s">UTR: '+esc(p.utr)+'</div>';row.appendChild(info);var abtn=document.createElement('button');abtn.className='ab';abtn.textContent='✓ Approve';abtn.setAttribute('data-idx',idx);abtn.onclick=function(){appTop(parseInt(this.getAttribute('data-idx')));};row.appendChild(abtn);var rbtn=document.createElement('button');rbtn.className='rb';rbtn.textContent='✕';rbtn.setAttribute('data-idx',idx);rbtn.onclick=function(){rejTop(parseInt(this.getAttribute('data-idx')));};row.appendChild(rbtn);el.appendChild(row);}}
+ 
+function renderWL(){var el=document.getElementById('wL');var items=[];for(var i=0;i<pWd.length;i++){if(pWd[i].status==='pending')items.push({p:pWd[i],i:i});}var b=document.getElementById('wB2');b.style.display=items.length?'inline':'none';b.textContent=items.length;el.innerHTML='';if(!items.length){el.innerHTML='<div style="text-align:center;padding:20px;color:#666">No requests.</div>';return;}for(var j=0;j<items.length;j++){var p=items[j].p,idx=items[j].i;var row=document.createElement('div');row.className='prow';var av=document.createElement('div');av.className='av';av.textContent=p.name[0];row.appendChild(av);var info=document.createElement('div');info.className='info';info.innerHTML='<div class="n">'+esc(p.name)+' — ₹'+p.amount+'</div><div class="s">UPI: '+esc(p.upi)+'</div>';row.appendChild(info);var abtn=document.createElement('button');abtn.className='ab';abtn.textContent='💰 Paid';abtn.setAttribute('data-idx',idx);abtn.onclick=function(){appWd(parseInt(this.getAttribute('data-idx')));};row.appendChild(abtn);el.appendChild(row);}}
+ 
+function appPay(i){pPay[i].status='approved';save();renderPL();updateBadges();toast('Approved!');}
+function rejPay(i){pPay[i].status='rejected';save();renderPL();updateBadges();toast('Rejected!');}
+function rejTop(i){pTop[i].status='rejected';save();renderTL();updateBadges();toast('Rejected!');}
+function appTop(i){var p=pTop[i];p.status='approved';var users=JSON.parse(localStorage.getItem('bl_us')||'{}');if(p.email){if(!users[p.email])users[p.email]={name:p.name,email:p.email,phone:p.phone,balance:0};users[p.email].balance=(users[p.email].balance||0)+p.amount;localStorage.setItem('bl_us',JSON.stringify(users));}if(user&&user.email===p.email){user.balance=(user.balance||0)+p.amount;updUI();}save();renderTL();updateBadges();toast('₹'+p.amount+' credited!');}
+function appWd(i){pWd[i].status='approved';save();renderWL();updateBadges();toast('Paid!');}
+function updateBadges(){var pc=0,tc=0,wc=0;for(var i=0;i<pPay.length;i++){if(pPay[i].status==='pending')pc++;}for(var i=0;i<pTop.length;i++){if(pTop[i].status==='pending')tc++;}for(var i=0;i<pWd.length;i++){if(pWd[i].status==='pending')wc++;}var pb=document.getElementById('pB');if(pb){pb.style.display=pc>0?'inline':'none';pb.textContent=pc;}var tb=document.getElementById('tB');if(tb){tb.style.display=tc>0?'inline':'none';tb.textContent=tc;}var wb=document.getElementById('wB2');if(wb){wb.style.display=wc>0?'inline':'none';wb.textContent=wc;}}
+ 
+// WINNERS
+function renderWF(){var el=document.getElementById('wF');var ts=[];for(var i=0;i<tournaments.length;i++){if(tournaments[i].status==='ongoing')ts.push(tournaments[i]);}if(!ts.length){el.innerHTML='<p style="font-size:12px;color:#666">No ongoing.</p>';return;}var h='';for(var i=0;i<ts.length;i++){var t=ts[i];var tT=[];for(var j=0;j<teams.length;j++){if(teams[j].tid===t.id)tT.push(teams[j]);}h+='<div style="margin-bottom:16px"><p style="font-weight:800">'+esc(t.name)+'</p>';for(var r=1;r<=3;r++){h+='<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:#ffd700;font-weight:900">#'+r+'</span><select id="w'+t.id+'s'+r+'" style="flex:1;background:#161638;border:1px solid #333;border-radius:6px;padding:8px;color:#fff;font-size:12px"><option value="">Select</option>';for(var k=0;k<tT.length;k++){h+='<option value="'+esc(tT[k].name)+'">'+esc(tT[k].name)+'</option>';}h+='</select><input id="w'+t.id+'p'+r+'" type="number" placeholder="₹" style="width:70px;background:#161638;border:1px solid #333;border-radius:6px;padding:8px;color:#fff;font-size:12px"></div>';}h+='<button class="ab" style="width:100%;padding:10px" onclick="annW('+t.id+')">Announce</button></div>';}el.innerHTML=h;}
+function annW(id){var t=null;for(var i=0;i<tournaments.length;i++){if(tournaments[i].id===id){t=tournaments[i];break;}}if(!t)return;t.winners=[];for(var r=1;r<=3;r++){var sel=document.getElementById('w'+id+'s'+r),inp=document.getElementById('w'+id+'p'+r);if(sel&&sel.value)t.winners.push({team:sel.value,prize:parseInt(inp.value)||0});}if(t.winners.length){t.status='completed';save();renderHome();toast('Winners announced!');}}
+ 
+// INIT
+renderF();renderHome();updateBadges();
+setInterval(function(){try{var d=localStorage.getItem('bl');if(d){var s=JSON.parse(d);teams=s.teams||[];pPay=s.pPay||[];pTop=s.pTop||[];pWd=s.pWd||[];wHist=s.wHist||[];}var t=localStorage.getItem('bl_t');if(t)tournaments=JSON.parse(t);if(user){var u=JSON.parse(localStorage.getItem('bl_us')||'{}');if(user.email&&u[user.email])user.balance=u[user.email].balance||0;updUI();}updateBadges();renderHome();}catch(e){}},5000);
+</script>
+ </body>
+</html>
